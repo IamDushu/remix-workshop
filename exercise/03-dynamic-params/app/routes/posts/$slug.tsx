@@ -13,17 +13,19 @@ export async function loader({params}: LoaderArgs) {
   if(!post) {
     throw new Error("Post not found")
   }
-
-  return json({post: post})
+  //Doing this at server and optimization
+  const html = marked(post.markdown);
+  return json({title: post.title, html})
 }
 
 export default function post() {
-  const data = useLoaderData<typeof loader>()
-  const html = marked(data.post.markdown);
+  //You can call useLoaderData as much as we want; it's not what fetchs
+  const {title, html} = useLoaderData<typeof loader>()
+
   return (
     <main className="mx-auto max-w-4xl">
       <h1 className="my-6 border-b-2 text-center text-3xl">
-        {data.post.title}
+        {title}
       </h1>
 
       <div dangerouslySetInnerHTML={{ __html: html }} />
