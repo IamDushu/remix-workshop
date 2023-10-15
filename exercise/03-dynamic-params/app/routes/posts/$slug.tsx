@@ -6,7 +6,13 @@ import { marked } from "marked";
 
 
 export async function loader({params}: LoaderArgs) {
+  if(!params.slug){
+    throw new Error("Missing Slug")
+  }
   const post =  await getPost(params.slug)
+  if(!post) {
+    throw new Error("Post not found")
+  }
   return json({post: post})
 }
 
